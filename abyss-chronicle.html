@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ABYSS CHRONICLE｜公式サイト</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Cinzel+Decorative:wght@400;700&family=Noto+Serif+JP:wght@200;300;400&family=Inter:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --black:   #030205;
+  --dark:    #0a0810;
+  --dark2:   #110d1a;
+  --dark3:   #1a1226;
+  --crimson: #c0192c;
+  --crim2:   #e8233a;
+  --crim3:   rgba(192,25,44,0.15);
+  --gold:    #c8973a;
+  --gold2:   #e8b84b;
+  --gold3:   rgba(200,151,58,0.12);
+  --purple:  #6b21a8;
+  --purp2:   #a855f7;
+  --text:    #e8e0d4;
+  --muted:   rgba(232,224,212,0.5);
+  --dimmed:  rgba(232,224,212,0.25);
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--black);
+  color: var(--text);
+  font-family: 'Inter', 'Noto Serif JP', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── CANVAS PARTICLES ── */
+#particles { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ── VIGNETTE ── */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 40%, rgba(3,2,5,0.7) 100%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 20px 60px;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(3,2,5,0.95) 0%, transparent 100%);
+}
+.nav-logo {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: 16px; letter-spacing: 0.15em;
+  color: var(--gold); text-decoration: none;
+  text-shadow: 0 0 20px rgba(200,151,58,0.5);
+}
+.nav-links { display: flex; gap: 36px; list-style: none; }
+.nav-links a {
+  font-family: 'Cinzel', serif; font-size: 11px;
+  letter-spacing: 0.25em; text-transform: uppercase;
+  color: var(--muted); text-decoration: none;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.nav-links a:hover { color: var(--gold); text-shadow: 0 0 12px rgba(200,151,58,0.4); }
+.nav-play {
+  font-family: 'Cinzel', serif; font-size: 10px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--black); background: var(--gold);
+  border: none; padding: 10px 24px; cursor: pointer;
+  text-decoration: none; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+  transition: background 0.3s, transform 0.2s;
+  box-shadow: 0 0 24px rgba(200,151,58,0.3);
+}
+.nav-play:hover { background: var(--gold2); transform: translateY(-2px); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh; position: relative; z-index: 2;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; overflow: hidden; padding: 100px 40px 80px;
+}
+/* Hero BG layers */
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse at 50% 60%, rgba(107,33,168,0.2) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 80%, rgba(192,25,44,0.15) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(200,151,58,0.08) 0%, transparent 40%),
+    linear-gradient(180deg, #030205 0%, #0d0818 40%, #0a0612 100%);
+}
+/* Rune circles */
+.rune-ring {
+  position: absolute; border-radius: 50%;
+  border: 1px solid; animation: rotateSlow linear infinite;
+}
+.rr1 { width: 600px; height: 600px; border-color: rgba(200,151,58,0.08); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 60s; }
+.rr2 { width: 420px; height: 420px; border-color: rgba(192,25,44,0.1); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 40s; animation-direction: reverse; }
+.rr3 { width: 260px; height: 260px; border-color: rgba(200,151,58,0.12); top: 50%; left: 50%; transform: translate(-50%,-50%); animation-duration: 25s; }
+@keyframes rotateSlow { to { transform: translate(-50%,-50%) rotate(360deg); } }
+
+/* Rune dots on rings */
+.rr1::before,.rr1::after,.rr2::before,.rr2::after {
+  content: ''; position: absolute;
+  width: 6px; height: 6px; background: var(--gold);
+  border-radius: 50%; box-shadow: 0 0 10px rgba(200,151,58,0.8);
+}
+.rr1::before { top: -3px; left: 50%; transform: translateX(-50%); }
+.rr1::after  { bottom: -3px; left: 50%; transform: translateX(-50%); }
+.rr2::before { top: -3px; left: 50%; transform: translateX(-50%); background: var(--crimson); box-shadow: 0 0 10px rgba(192,25,44,0.8); }
+.rr2::after  { bottom: -3px; left: 50%; transform: translateX(-50%); background: var(--crimson); box-shadow: 0 0 10px rgba(192,25,44,0.8); }
+
+.hero-content { position: relative; z-index: 3; max-width: 900px; }
+.hero-eyebrow {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.5em;
+  text-transform: uppercase; color: var(--gold);
+  margin-bottom: 28px; display: flex; align-items: center; justify-content: center; gap: 20px;
+  opacity: 0; animation: fadeIn 1s 0.3s forwards;
+}
+.hero-eyebrow::before,.hero-eyebrow::after {
+  content: ''; display: block; width: 60px; height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold));
+}
+.hero-eyebrow::after { background: linear-gradient(to left, transparent, var(--gold)); }
+
+.hero-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(52px, 8vw, 110px);
+  font-weight: 700; line-height: 0.95; letter-spacing: 0.05em;
+  margin-bottom: 16px;
+  text-shadow: 0 0 60px rgba(200,151,58,0.3), 0 2px 4px rgba(0,0,0,0.8);
+  opacity: 0; animation: heroTitleIn 1.2s 0.5s forwards;
+}
+.hero-title .line1 { display: block; color: var(--text); }
+.hero-title .line2 {
+  display: block; font-size: 0.55em; letter-spacing: 0.3em;
+  background: linear-gradient(90deg, var(--gold), var(--gold2), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+@keyframes heroTitleIn {
+  from { opacity: 0; transform: translateY(30px) scale(0.96); letter-spacing: 0.2em; }
+  to   { opacity: 1; transform: translateY(0) scale(1); letter-spacing: 0.05em; }
+}
+.hero-sub {
+  font-family: 'Noto Serif JP', serif; font-size: 15px; font-weight: 200;
+  color: var(--muted); line-height: 2; margin-bottom: 52px;
+  opacity: 0; animation: fadeIn 1s 0.9s forwards;
+}
+.hero-btns {
+  display: flex; gap: 20px; justify-content: center;
+  opacity: 0; animation: fadeIn 1s 1.1s forwards;
+}
+.btn-play {
+  font-family: 'Cinzel', serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--black); background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: none; padding: 18px 44px; cursor: pointer; text-decoration: none;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 0 40px rgba(200,151,58,0.4);
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.btn-play:hover { transform: translateY(-3px); box-shadow: 0 4px 60px rgba(200,151,58,0.6); }
+.btn-trailer {
+  font-family: 'Cinzel', serif; font-size: 12px;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--gold); background: transparent;
+  border: 1px solid rgba(200,151,58,0.4); padding: 17px 36px;
+  cursor: pointer; text-decoration: none;
+  clip-path: polygon(12px 0%, 100% 0%, calc(100% - 12px) 100%, 0% 100%);
+  transition: background 0.3s, border-color 0.3s;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.btn-trailer:hover { background: var(--gold3); border-color: var(--gold); }
+
+.hero-scroll {
+  position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 10px;
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.4em;
+  text-transform: uppercase; color: var(--dimmed);
+  opacity: 0; animation: fadeIn 1s 1.8s forwards;
+}
+.scroll-gem {
+  width: 12px; height: 18px;
+  border: 1px solid rgba(200,151,58,0.3); border-radius: 6px;
+  position: relative; overflow: hidden;
+}
+.scroll-gem::after {
+  content: ''; position: absolute;
+  top: 3px; left: 50%; transform: translateX(-50%);
+  width: 4px; height: 4px; border-radius: 50%;
+  background: var(--gold);
+  animation: scrollDot 2s ease-in-out infinite;
+}
+@keyframes scrollDot { 0%,100% { top: 3px; opacity: 1; } 80% { top: 9px; opacity: 0.2; } }
+
+/* ── DIVIDER ── */
+.rune-divider {
+  position: relative; z-index: 2;
+  display: flex; align-items: center; gap: 16px; padding: 0 60px;
+  margin: 0 auto; max-width: 1200px;
+}
+.rune-divider::before,.rune-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, rgba(200,151,58,0.3));
+}
+.rune-divider::after { background: linear-gradient(to left, transparent, rgba(200,151,58,0.3)); }
+.rune-glyph {
+  font-family: 'Cinzel', serif; font-size: 14px;
+  color: rgba(200,151,58,0.5); letter-spacing: 0.3em;
+}
+
+/* ── STORY ── */
+.story {
+  padding: 120px 60px; position: relative; z-index: 2;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+}
+.story-visual {
+  position: relative; aspect-ratio: 3/4; max-height: 520px;
+}
+.story-frame {
+  position: absolute; inset: 0;
+  border: 1px solid rgba(200,151,58,0.2);
+  background:
+    radial-gradient(ellipse at 35% 25%, rgba(107,33,168,0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 70% 75%, rgba(192,25,44,0.2) 0%, transparent 50%),
+    linear-gradient(160deg, #1a1226 0%, #0d0818 100%);
+}
+.story-frame::before {
+  content: ''; position: absolute; inset: 16px;
+  border: 1px solid rgba(200,151,58,0.08);
+}
+/* Corner ornaments */
+.story-frame::after {
+  content: '';
+  position: absolute; top: -1px; left: -1px;
+  width: 24px; height: 24px;
+  border-top: 2px solid var(--gold); border-left: 2px solid var(--gold);
+}
+.corner-br {
+  position: absolute; bottom: -1px; right: -1px;
+  width: 24px; height: 24px;
+  border-bottom: 2px solid var(--gold); border-right: 2px solid var(--gold);
+}
+.story-icon {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 90px; opacity: 0.25;
+  animation: iconPulse 4s ease-in-out infinite;
+}
+@keyframes iconPulse { 0%,100% { transform: translate(-50%,-50%) scale(1); opacity: 0.25; } 50% { transform: translate(-50%,-56%) scale(1.05); opacity: 0.35; } }
+
+.story-label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.4em;
+  text-transform: uppercase; color: var(--gold);
+  display: flex; align-items: center; gap: 16px; margin-bottom: 24px;
+}
+.story-label::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+.story-title {
+  font-family: 'Cinzel', serif; font-size: clamp(28px, 3vw, 44px);
+  font-weight: 600; line-height: 1.2; margin-bottom: 28px;
+}
+.story-title em { font-style: italic; color: var(--gold); }
+.story-body {
+  font-family: 'Noto Serif JP', serif; font-weight: 200;
+  font-size: 14px; line-height: 2.2; color: var(--muted);
+  margin-bottom: 16px;
+}
+.story-quote {
+  border-left: 2px solid var(--crimson);
+  padding: 16px 24px; margin: 28px 0;
+  font-family: 'Cinzel', serif; font-size: 13px;
+  font-style: italic; color: rgba(232,224,212,0.6); letter-spacing: 0.05em;
+  background: var(--crim3);
+}
+
+/* ── FEATURES ── */
+.features {
+  padding: 100px 60px;
+  background: linear-gradient(180deg, transparent 0%, rgba(107,33,168,0.05) 50%, transparent 100%);
+  position: relative; z-index: 2;
+}
+.features-inner { max-width: 1200px; margin: 0 auto; }
+.section-head { text-align: center; margin-bottom: 70px; }
+.section-label {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.5em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 20px;
+  display: flex; align-items: center; justify-content: center; gap: 20px;
+}
+.section-label::before,.section-label::after { content: '◆'; font-size: 8px; opacity: 0.5; }
+.section-title {
+  font-family: 'Cinzel', serif; font-size: clamp(28px, 3.5vw, 48px);
+  font-weight: 600; line-height: 1.1;
+}
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: rgba(200,151,58,0.06); }
+.feat-item {
+  padding: 48px 36px;
+  background: var(--dark);
+  position: relative; overflow: hidden;
+  transition: background 0.4s;
+}
+.feat-item::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(to right, transparent, var(--crimson), transparent);
+  transform: scaleX(0); transition: transform 0.4s;
+}
+.feat-item:hover { background: var(--dark2); }
+.feat-item:hover::before { transform: scaleX(1); }
+.feat-num {
+  font-family: 'Cinzel', serif; font-size: 48px; font-weight: 700;
+  color: rgba(200,151,58,0.07); line-height: 1; margin-bottom: 20px;
+  user-select: none;
+}
+.feat-icon { font-size: 32px; margin-bottom: 16px; display: block; }
+.feat-title {
+  font-family: 'Cinzel', serif; font-size: 16px; font-weight: 600;
+  color: var(--gold2); margin-bottom: 16px; letter-spacing: 0.05em;
+}
+.feat-body {
+  font-family: 'Noto Serif JP', serif; font-weight: 200;
+  font-size: 13px; line-height: 2; color: var(--muted);
+}
+
+/* ── CHARACTERS ── */
+.characters { padding: 100px 60px; position: relative; z-index: 2; }
+.chars-inner { max-width: 1200px; margin: 0 auto; }
+.chars-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 60px; }
+.char-card {
+  position: relative; overflow: hidden; cursor: pointer;
+  border: 1px solid rgba(200,151,58,0.1);
+  transition: border-color 0.3s, transform 0.3s;
+}
+.char-card:hover { border-color: rgba(200,151,58,0.4); transform: translateY(-8px); }
+.char-bg {
+  aspect-ratio: 2/3;
+  display: flex; align-items: flex-end; justify-content: center;
+  position: relative; overflow: hidden;
+}
+.char-visual {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center; font-size: 80px;
+}
+.cv1 { background: linear-gradient(180deg, #1a0818 0%, #2d0c28 60%, #0a0510 100%); }
+.cv2 { background: linear-gradient(180deg, #0a1520 0%, #0d2035 60%, #050810 100%); }
+.cv3 { background: linear-gradient(180deg, #1a1005 0%, #2d1c08 60%, #0a0805 100%); }
+.cv4 { background: linear-gradient(180deg, #050a1a 0%, #0a1230 60%, #030510 100%); }
+.char-glow {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 60%;
+  transition: opacity 0.3s;
+}
+.cg1 { background: linear-gradient(to top, rgba(192,25,44,0.4), transparent); }
+.cg2 { background: linear-gradient(to top, rgba(59,130,246,0.4), transparent); }
+.cg3 { background: linear-gradient(to top, rgba(200,151,58,0.4), transparent); }
+.cg4 { background: linear-gradient(to top, rgba(107,33,168,0.5), transparent); }
+.char-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 24px 20px 20px;
+  background: linear-gradient(to top, rgba(3,2,5,0.95), transparent);
+}
+.char-role {
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.35em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 6px;
+}
+.char-name {
+  font-family: 'Cinzel', serif; font-size: 17px; font-weight: 600;
+  color: var(--text); line-height: 1.2; margin-bottom: 8px;
+}
+.char-desc { font-size: 11px; color: var(--muted); line-height: 1.6; }
+.char-tag {
+  display: inline-block; margin-top: 10px;
+  font-family: 'Cinzel', serif; font-size: 9px; letter-spacing: 0.2em;
+  padding: 3px 10px; border: 1px solid;
+}
+.ct-crim { border-color: rgba(192,25,44,0.5); color: #f87171; }
+.ct-blue { border-color: rgba(59,130,246,0.5); color: #93c5fd; }
+.ct-gold { border-color: rgba(200,151,58,0.5); color: var(--gold2); }
+.ct-purp { border-color: rgba(168,85,247,0.5); color: #c4b5fd; }
+
+/* ── PLATFORM ── */
+.platform-section {
+  padding: 100px 60px;
+  background: radial-gradient(ellipse at center, rgba(192,25,44,0.08) 0%, transparent 70%);
+  position: relative; z-index: 2;
+}
+.plat-inner { max-width: 900px; margin: 0 auto; text-align: center; }
+.plat-title {
+  font-family: 'Cinzel Decorative', serif;
+  font-size: clamp(32px, 4vw, 54px); font-weight: 700; line-height: 1.1;
+  margin-bottom: 20px;
+  background: linear-gradient(135deg, var(--gold), var(--gold2), var(--gold));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.plat-sub {
+  font-family: 'Noto Serif JP', serif; font-weight: 200;
+  font-size: 14px; color: var(--muted); line-height: 2; margin-bottom: 52px;
+}
+.plat-date {
+  font-family: 'Cinzel', serif; font-size: 13px; letter-spacing: 0.25em;
+  color: var(--crimson); margin-bottom: 40px; display: block;
+}
+.plat-date::before { content: '━  '; } .plat-date::after { content: '  ━'; }
+.plat-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 52px; }
+.plat-btn {
+  font-family: 'Cinzel', serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text); background: var(--dark2);
+  border: 1px solid rgba(200,151,58,0.2); padding: 14px 30px;
+  cursor: pointer; text-decoration: none;
+  transition: border-color 0.3s, background 0.3s, transform 0.2s;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.plat-btn:hover { border-color: var(--gold); background: var(--gold3); transform: translateY(-2px); }
+.plat-main-btn {
+  font-family: 'Cinzel', serif; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--black); background: linear-gradient(135deg, var(--gold), var(--gold2));
+  border: none; padding: 20px 56px; cursor: pointer; text-decoration: none;
+  clip-path: polygon(16px 0%, 100% 0%, calc(100% - 16px) 100%, 0% 100%);
+  transition: transform 0.2s, box-shadow 0.3s;
+  box-shadow: 0 0 48px rgba(200,151,58,0.4);
+  display: inline-block;
+}
+.plat-main-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 0 64px rgba(200,151,58,0.6); }
+.plat-rating {
+  display: flex; align-items: center; justify-content: center;
+  gap: 24px; margin-top: 36px;
+}
+.rating-badge {
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
+}
+.rating-score {
+  font-family: 'Cinzel', serif; font-size: 28px; font-weight: 700;
+  background: linear-gradient(135deg, var(--gold), var(--gold2));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+}
+.rating-label { font-size: 10px; color: var(--dimmed); letter-spacing: 0.2em; text-transform: uppercase; }
+.rating-sep { width: 1px; height: 48px; background: rgba(200,151,58,0.2); }
+.stars { color: var(--gold); font-size: 16px; letter-spacing: 4px; }
+
+/* ── FOOTER ── */
+footer {
+  padding: 60px; border-top: 1px solid rgba(200,151,58,0.1);
+  position: relative; z-index: 2;
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1200px; margin: 0 auto;
+}
+.footer-logo {
+  font-family: 'Cinzel Decorative', serif; font-size: 18px;
+  color: var(--gold); letter-spacing: 0.1em;
+  text-shadow: 0 0 20px rgba(200,151,58,0.3);
+}
+.footer-links { display: flex; gap: 28px; list-style: none; }
+.footer-links a {
+  font-family: 'Cinzel', serif; font-size: 10px; letter-spacing: 0.25em;
+  text-transform: uppercase; color: var(--dimmed); text-decoration: none;
+  transition: color 0.3s;
+}
+.footer-links a:hover { color: var(--gold); }
+.footer-copy { font-size: 10px; color: var(--dimmed); letter-spacing: 0.1em; }
+
+/* ── ANIMS ── */
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+@keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:translateY(0); } }
+.reveal { opacity:0; transform:translateY(28px); transition: opacity 0.8s ease, transform 0.8s ease; }
+.reveal.vis { opacity:1; transform:translateY(0); }
+.rd1{transition-delay:.1s;} .rd2{transition-delay:.2s;} .rd3{transition-delay:.3s;} .rd4{transition-delay:.4s;}
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- NAV -->
+<nav>
+  <a href="https://www.google.com/?hl=ja&zx=1778124899491" class="nav-logo">ABYSS CHRONICLE</a>
+  <ul class="nav-links">
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">世界観</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">システム</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">キャラクター</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">配信情報</a></li>
+  </ul>
+  <a href="https://www.playstation.com" target="_blank" class="nav-play">今すぐ入手</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="rune-ring rr1"></div>
+    <div class="rune-ring rr2"></div>
+    <div class="rune-ring rr3"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Dark Fantasy RPG</div>
+    <h1 class="hero-title">
+      <span class="line1">ABYSS</span>
+      <span class="line2">CHRONICLE</span>
+    </h1>
+    <p class="hero-sub">
+      深淵に眠る禁断の力、古き神々の残滓——<br>
+      すべての真実は、闇の底に沈んでいる。
+    </p>
+    <div class="hero-btns">
+      <a href="https://www.playstation.com" target="_blank" class="btn-play">⚔ 無料プレイ開始</a>
+      <a href="https://www.youtube.com" target="_blank" class="btn-trailer">▶ トレーラーを見る</a>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <div class="scroll-gem"></div>
+    Scroll
+  </div>
+</section>
+
+<!-- STORY -->
+<section class="story" id="story">
+  <div class="story-visual reveal">
+    <div class="story-frame">
+      <div class="corner-br"></div>
+      <div class="story-icon">⚔️</div>
+    </div>
+  </div>
+  <div>
+    <div class="story-label reveal">World Story</div>
+    <h2 class="story-title reveal rd1">古き<em>封印</em>が解かれ、<br>深淵の扉は開いた</h2>
+    <p class="story-body reveal rd2">
+      時は滅びの時代。千年の封印が崩れ、深淵の神「ヴォイド・アルカナ」が復活の兆しを見せる。各地に現れる「深淵の裂け目」は世界を侵食し、人々は絶望の淵へと追いやられていった。
+    </p>
+    <div class="story-quote reveal rd2">
+      "光なき闇に踏み込む者よ——汝はいずれ、己の影に喰われるだろう。"
+    </div>
+    <p class="story-body reveal rd3">
+      廃墟となった王国の末裔・カイルは、禁断の力「深淵紋」に目覚める。仲間たちと共に真実を追い求め、神話の時代から続く宿命の螺旋へと飛び込んでいく。
+    </p>
+  </div>
+</section>
+
+<div class="rune-divider reveal"><div class="rune-glyph">✦ ✦ ✦</div></div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <div class="section-head">
+      <div class="section-label reveal">Game System</div>
+      <h2 class="section-title reveal rd1">深淵の力を<br>使いこなせ</h2>
+    </div>
+    <div class="features-grid">
+      <div class="feat-item reveal">
+        <div class="feat-num">01</div>
+        <span class="feat-icon">⚔️</span>
+        <div class="feat-title">深淵紋バトル</div>
+        <p class="feat-body">リアルタイムアクションと戦略性を融合。「深淵紋」を組み合わせ、数百通りのコンボが生まれる革新的な戦闘システム。</p>
+      </div>
+      <div class="feat-item reveal rd1">
+        <div class="feat-num">02</div>
+        <span class="feat-icon">🗺️</span>
+        <div class="feat-title">広大なオープンワールド</div>
+        <p class="feat-body">廃墟の王都から深海の遺跡まで、100以上のフィールドを自由に探索。季節・天候・時間が動的に変化する生きた世界。</p>
+      </div>
+      <div class="feat-item reveal rd2">
+        <div class="feat-num">03</div>
+        <span class="feat-icon">📜</span>
+        <div class="feat-title">分岐するエピック物語</div>
+        <p class="feat-body">選択肢によって変わる50以上のエンディング。プレイヤーの選択が歴史を書き換え、世界の運命を左右する。</p>
+      </div>
+      <div class="feat-item reveal">
+        <div class="feat-num">04</div>
+        <span class="feat-icon">🛡️</span>
+        <div class="feat-title">深淵武器鍛冶</div>
+        <p class="feat-body">数千種類の素材から唯一無二の装備を生み出す。深淵の欠片を注入し、武器に意志と魂を宿らせよ。</p>
+      </div>
+      <div class="feat-item reveal rd1">
+        <div class="feat-num">05</div>
+        <span class="feat-icon">👥</span>
+        <div class="feat-title">4人Co-opマルチ</div>
+        <p class="feat-body">仲間と共に巨大な深淵の守護者「ヴォイドウォーデン」に挑む。連携技と役割分担で高難度ダンジョンを攻略せよ。</p>
+      </div>
+      <div class="feat-item reveal rd2">
+        <div class="feat-num">06</div>
+        <span class="feat-icon">✨</span>
+        <div class="feat-title">深淵の審判（PvP）</div>
+        <p class="feat-body">世界中のプレイヤーと深淵紋の力を競い合うランクマッチ。頂点に立つ者が「深淵の覇者」の称号を得る。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CHARACTERS -->
+<section class="characters" id="characters">
+  <div class="chars-inner">
+    <div class="section-head">
+      <div class="section-label reveal">Characters</div>
+      <h2 class="section-title reveal rd1">深淵に挑む<br>運命の4人</h2>
+    </div>
+    <div class="chars-grid">
+      <div class="char-card reveal">
+        <div class="char-bg cv1">
+          <div class="char-visual">⚔️</div>
+          <div class="char-glow cg1"></div>
+        </div>
+        <div class="char-info">
+          <div class="char-role">主人公 / 剣士</div>
+          <div class="char-name">カイル＝ヴォルン</div>
+          <div class="char-desc">廃墟の王国の末裔。深淵紋に目覚め、宿命の戦いへ。</div>
+          <span class="char-tag ct-crim">VANGUARD</span>
+        </div>
+      </div>
+      <div class="char-card reveal rd1">
+        <div class="char-bg cv2">
+          <div class="char-visual">🌊</div>
+          <div class="char-glow cg2"></div>
+        </div>
+        <div class="char-info">
+          <div class="char-role">魔法使い / 水属性</div>
+          <div class="char-name">セリア＝アクア</div>
+          <div class="char-desc">古代魔法の継承者。冷静沈着、謎めいた過去を持つ。</div>
+          <span class="char-tag ct-blue">MAGE</span>
+        </div>
+      </div>
+      <div class="char-card reveal rd2">
+        <div class="char-bg cv3">
+          <div class="char-visual">🔥</div>
+          <div class="char-glow cg3"></div>
+        </div>
+        <div class="char-info">
+          <div class="char-role">戦士 / 炎属性</div>
+          <div class="char-name">ガルス＝ブレイズ</div>
+          <div class="char-desc">元傭兵団長。荒くれ者だが仲間への絆は誰より熱い。</div>
+          <span class="char-tag ct-gold">BERSERKER</span>
+        </div>
+      </div>
+      <div class="char-card reveal rd3">
+        <div class="char-bg cv4">
+          <div class="char-visual">🌙</div>
+          <div class="char-glow cg4"></div>
+        </div>
+        <div class="char-info">
+          <div class="char-role">暗殺者 / 影属性</div>
+          <div class="char-name">ルナ＝ヴェール</div>
+          <div class="char-desc">闇の組織の元刺客。真実を求め、仲間と共に歩む。</div>
+          <span class="char-tag ct-purp">ASSASSIN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="rune-divider reveal"><div class="rune-glyph">✦ ✦ ✦</div></div>
+
+<!-- PLATFORM -->
+<section class="platform-section" id="platform">
+  <div class="plat-inner">
+    <div class="section-label reveal">Now Available</div>
+    <div class="plat-title reveal rd1">深淵への扉、<br>今ここに開く</div>
+    <span class="plat-date reveal rd1">2025年3月28日 配信開始</span>
+    <p class="plat-sub reveal rd2">
+      PS5 / Xbox Series X|S / PC（Steam）にて好評配信中。<br>
+      基本プレイ無料。深淵エディションは全コンテンツ収録。
+    </p>
+    <div class="plat-btns reveal rd2">
+      <a href="https://www.playstation.com" target="_blank" class="plat-btn">🎮 PlayStation</a>
+      <a href="https://www.xbox.com" target="_blank" class="plat-btn">🟢 Xbox</a>
+      <a href="https://store.steampowered.com" target="_blank" class="plat-btn">🖥 Steam</a>
+    </div>
+    <a href="https://www.playstation.com" target="_blank" class="plat-main-btn reveal rd3">⚔ 無料プレイ開始</a>
+    <div class="plat-rating reveal rd4">
+      <div class="rating-badge">
+        <div class="stars">★★★★★</div>
+        <div class="rating-score">9.4</div>
+        <div class="rating-label">Famitsu</div>
+      </div>
+      <div class="rating-sep"></div>
+      <div class="rating-badge">
+        <div class="stars">★★★★★</div>
+        <div class="rating-score">9.2</div>
+        <div class="rating-label">GameSpot</div>
+      </div>
+      <div class="rating-sep"></div>
+      <div class="rating-badge">
+        <div class="stars">★★★★★</div>
+        <div class="rating-score">4.8</div>
+        <div class="rating-label">User Rating</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ABYSS CHRONICLE</div>
+  <ul class="footer-links">
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">世界観</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">システム</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">キャラクター</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">ニュース</a></li>
+    <li><a href="https://www.google.com/?hl=ja&zx=1778124899491">サポート</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 ABYSS CHRONICLE. All Rights Reserved.</div>
+</footer>
+
+<script>
+// Particle system
+const canvas = document.getElementById('particles');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+
+const particles = Array.from({length: 80}, () => ({
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  size: Math.random() * 1.5 + 0.3,
+  speedY: -(Math.random() * 0.4 + 0.1),
+  speedX: (Math.random() - 0.5) * 0.2,
+  opacity: Math.random() * 0.5 + 0.1,
+  hue: Math.random() > 0.6 ? 38 : Math.random() > 0.5 ? 0 : 270,
+}));
+
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fillStyle = `hsla(${p.hue}, 80%, 60%, ${p.opacity})`;
+    ctx.fill();
+    p.y += p.speedY;
+    p.x += p.speedX;
+    p.opacity += (Math.random() - 0.5) * 0.01;
+    p.opacity = Math.max(0.05, Math.min(0.6, p.opacity));
+    if (p.y < -10) { p.y = canvas.height + 10; p.x = Math.random() * canvas.width; }
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+// Scroll reveal
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis'); });
+}, { threshold: 0.1 });
+document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
+</body>
+</html>
